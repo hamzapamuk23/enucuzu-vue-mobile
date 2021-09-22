@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="mt-15">
     <v-data-table
       :headers="headers"
       :items="schools"
@@ -11,6 +11,27 @@
           <v-toolbar-title>School Crud</v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
+          <!-- <v-form class="mt-15 ms-15">
+            <v-row>
+              <v-col cols="12" sm="6" md="4">
+                <v-text-field
+                  v-model="editedItem.name"
+                  label="Name"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="6" md="4">
+                <v-text-field
+                  v-model="editedItem.code"
+                  label="Code"
+                ></v-text-field>
+              </v-col>
+              <v-checkbox
+                v-model="editedItem.active"
+                label="Active"
+              ></v-checkbox>
+            </v-row>
+          </v-form> -->
+
           <v-dialog v-model="dialog" max-width="500px">
             <template v-slot:activator="{ on, attrs }">
               <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on"
@@ -19,7 +40,7 @@
             </template>
             <v-card>
               <v-card-title>
-                <span class="text-h5">asdsad</span>
+                <span class="text-h5">New Item</span>
               </v-card-title>
 
               <v-card-text>
@@ -86,6 +107,7 @@ export default {
       school: { id: null, name: "", code: "", active: false },
       editedItem: {},
       dialog: false,
+      dialogSearch: false,
     };
   },
 
@@ -114,7 +136,6 @@ export default {
     },
 
     saveSchool() {
-      console.log(this.school.id);
       if (this.editedItem.id == null || this.editedItem.id == "") {
         this.addSchool();
         this.close();
@@ -126,7 +147,6 @@ export default {
 
     editSchool(item) {
       this.editedItem = Object.assign({}, item);
-      console.log(this.editedItem.id);
       this.dialog = true;
     },
 
@@ -141,10 +161,7 @@ export default {
     },
 
     clean() {
-      this.editedItem.id = null;
-      this.editedItem.name = "";
-      this.editedItem.code = "";
-      this.editedItem.active = false;
+      this.editedItem = {};
     },
   },
 };
