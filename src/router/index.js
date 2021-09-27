@@ -1,7 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Student from "../views/Student.vue";
-import School2 from "../views/School2.vue";
+import School from "../views/School.vue";
 
 Vue.use(VueRouter);
 
@@ -12,9 +12,9 @@ const routes = [
     component: Student,
   },
   {
-    path: "/school2",
-    name: "School2",
-    component: School2,
+    path: "/school",
+    name: "School",
+    component: School,
     // component: () => import('../views/About.vue')
   },
 ];
