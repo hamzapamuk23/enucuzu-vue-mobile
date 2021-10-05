@@ -1,7 +1,8 @@
 <template>
   <v-container>
     <v-card>
-      <v-data-table :headers="headers" :items="items" class="elevation-3" :loading="loading" :options.sync="options" uodate:sortBy>
+      <v-data-table :headers="headers" :items="items" class="elevation-3" :loading="loading" :options.sync="options" :server-items-length="totalElements" :items-per-page="5">
+        <!-- sort-by.sync="sortBy" -->
         <template v-slot:top>
           <v-toolbar color="#FFA000" flat>
             <v-toolbar-title>{{ tableTitle }}</v-toolbar-title>
@@ -17,7 +18,7 @@
           </v-toolbar>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-icon small class="mr-2" @click="$emit('editData', item, item.name)">
+          <v-icon small class="mr-2" @click="$emit('editData', item)">
             mdi-pencil
           </v-icon>
           <v-icon small @click="deleteSchool(item.id)">
@@ -38,39 +39,37 @@ export default {
       items: [],
       loading: false,
       options: {},
+      totalElements: 0,
       page: 0,
+      // sortBy: "id",
     };
   },
 
   watch: {
     options: {
       handler() {
-        this.sortby();
+        this.getList();
+        // this.sortby();
       },
     },
+    deep: true,
   },
 
   props: ["headers", "getUrl", "deleteUrl", "tableTitle", "responseKey", "getSearch"],
 
-  mounted() {
-    this.getList();
-    this.sortby();
-  },
-
   methods: {
     async getList() {
+      const { sortBy, sortDesc, page, itemsPerPage } = this.options;
+      console.log(sortBy[0], sortDesc[0]);
+      let pageNumber = page - 1;
       this.loading = true;
-      await this.axios.get(this.getUrl + "name=" + this.search.name + this.getSearch + "&page=" + this.page + "&size=" + this.options.size).then((response) => ((this.items = response.data._embedded[this.responseKey]), (this.options = response.data.page)));
+      await this.axios.get(this.getUrl + "name=" + this.search.name + this.getSearch + "&page=" + pageNumber + "&size=" + itemsPerPage + "&sort=" + (sortBy[0] === undefined ? "id" : sortBy[0]) + "," + (sortDesc[0] === true ? "desc" : "asc")).then((response) => ((this.items = response.data._embedded[this.responseKey]), (this.totalElements = response.data.page.totalElements)));
       this.loading = false;
     },
 
     async deleteSchool(id) {
       await this.axios.delete(this.deleteUrl + id);
       this.getList();
-    },
-
-    async sortby() {
-      await this.axios.get("http://localhost:8080/school/search/OrderByName").then((response) => (this.sortByItems = response.data._embedded[this.responseKey]));
     },
   },
 };

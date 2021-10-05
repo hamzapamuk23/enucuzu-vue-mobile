@@ -28,23 +28,13 @@
 export default {
   data() {
     return {
-      drawer: false,
+      drawer: true,
       group: null,
       links: [
         { icon: "home", text: "School", route: "/School" },
-        {
-          icon: "school",
-          text: "Student",
-          route: "/Student",
-        },
+        { icon: "school", text: "Student", route: "/Student" },
       ],
     };
-  },
-
-  methods: {
-    deneme() {
-      alert("asdasd");
-    },
   },
 };
 </script>

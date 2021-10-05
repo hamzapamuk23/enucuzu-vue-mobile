@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <DataTable :headers="headers" :tableTitle="tableTitle" :responseKey="responseKey" :getSearch="getSearch" ref="DataTable" @editData="editStudent" @onShow="onShow" get-url="http://localhost:8080/student/search/findAllSearch?" delete-url="http://localhost:8080/student/" />
+    <data-table :headers="headers" :tableTitle="tableTitle" :responseKey="responseKey" :getSearch="getSearch" ref="DataTable" @editData="editStudent" @onShow="onShow" get-url="http://localhost:8080/student/search/findAllSearch?" delete-url="http://localhost:8080/student/" />
     <v-card class="mt-5 elevation-3">
       <v-form v-show="showForm">
         <v-toolbar color="#FFA000" flat>
@@ -12,19 +12,19 @@
         <v-container>
           <v-row>
             <v-col cols="12" sm="6" md="4" lg="4">
-              <v-text-field v-model="editedItem.name" label="Name"></v-text-field>
+              <v-text-field v-model="editedItem.name" label="Name" type="text" required></v-text-field>
             </v-col>
             <v-col cols="12" sm="6" md="4" lg="4">
-              <v-text-field v-model="editedItem.surname" label="Surname"></v-text-field>
+              <v-text-field v-model="editedItem.surname" label="Surname" type="text"></v-text-field>
             </v-col>
             <v-col cols="12" sm="6" md="4" lg="4">
-              <v-text-field v-model="editedItem.number" label="Number"></v-text-field>
+              <v-text-field v-model="editedItem.number" label="Number" type="number"></v-text-field>
             </v-col>
             <v-col cols="12" sm="6" md="4" lg="4">
               <v-text-field v-model="editedItem.age" label="Age" type="number"></v-text-field>
             </v-col>
             <v-col cols="12" sm="6" md="4" lg="4">
-              <v-text-field v-model="editedItem.gpa" label="Gpa"></v-text-field>
+              <v-text-field v-model="editedItem.gpa" label="Gpa" type="number"></v-text-field>
             </v-col>
             <v-col cols="12" sm="6" md="4" lg="4">
               <v-select v-model="editedItem.school" :items="schools" item-text="name" item-value="id" label="Select" return-object single-line></v-select>
@@ -37,10 +37,11 @@
 </template>
 
 <script>
-import DataTable from "@/components/DataTable";
+import Vue from "vue";
+import DataTable from "../components/DataTable.vue";
+Vue.component("data-table", DataTable);
 export default {
   components: { DataTable },
-
   data() {
     return {
       headers: [
@@ -56,14 +57,14 @@ export default {
           value: "actions",
         },
       ],
+      // rules: { name: [(val) => val === "" || "This field is required"], surname: [(val) => val === " " || "This field is required"], number: [(val) => val === " " || "This field is required"], age: [(val) => val === "" || "This field is required"], gpa: [(val) => val === "" || "This field is required"] },
       formTitle: "",
       getSearch: "&surname=&number=&age=&gpa=&schoolName=",
       showForm: false,
-      tableTitle: "Student Crud",
+      tableTitle: "Student Table",
       responseKey: "students",
       schools: [],
       editedItem: { id: null, school: {} },
-      students: [],
     };
   },
 
@@ -83,9 +84,12 @@ export default {
     },
 
     async addStudent() {
-      console.log(this.editedItem);
-      await this.axios.post("http://localhost:8080/student/", this.editedItem);
-      this.$refs.DataTable.getList();
+      if (this.control) {
+        alert("Aynı numaraya sahip 2 öğrenci olamaz!");
+      } else {
+        await this.axios.post("http://localhost:8080/student/", this.editedItem);
+        this.$refs.DataTable.getList();
+      }
     },
 
     async updateStudent() {
@@ -105,7 +109,6 @@ export default {
         this.clean();
       } else {
         this.updateStudent();
-        this.clean();
       }
     },
 

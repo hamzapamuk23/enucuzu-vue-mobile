@@ -15,7 +15,7 @@
               <v-text-field v-model="editedItem.name" label="Name"></v-text-field>
             </v-col>
             <v-col cols="12" sm="12" md="4" lg="4">
-              <v-text-field v-model="editedItem.code" label="Code"></v-text-field>
+              <v-text-field v-model="editedItem.code" label="Code" counter="6"></v-text-field>
             </v-col>
             <v-col cols="12" sm="12" md="4" lg="4">
               <v-checkbox v-model="editedItem.active" label="Active"></v-checkbox>
@@ -44,7 +44,7 @@ export default {
     getSearch: "&code=",
     showForm: false,
     responseKey: "schools",
-    tableTitle: "School Crud",
+    tableTitle: "School Table",
     school: { id: null, name: "", code: "", active: false },
     editedItem: {},
   }),
@@ -73,7 +73,6 @@ export default {
         this.clean();
       } else {
         this.updateSchool();
-        this.clean();
       }
     },
 
