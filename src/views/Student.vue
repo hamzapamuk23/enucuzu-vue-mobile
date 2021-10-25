@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <data-table :headers="headers" :tableTitle="tableTitle" :responseKey="responseKey" :getSearch="getSearch" ref="DataTable" @editData="editStudent" @onShow="onShow" get-url="http://localhost:8080/student/search/findAllSearch?" delete-url="http://localhost:8080/student/" />
-    <v-card class="mt-5 elevation-3">
+    <v-card class="mt-5 mx-2 elevation-3" style="width:1142px">
       <v-form v-show="showForm">
         <v-toolbar color="#FFA000" flat>
           <v-toolbar-title>{{ formTitle }}</v-toolbar-title>
@@ -31,6 +31,9 @@
             </v-col>
           </v-row>
         </v-container>
+        <v-snackbar v-model="snackbar" color="#B71C1C" :timeout="timeout">
+          {{ text }}
+        </v-snackbar>
       </v-form>
     </v-card>
   </v-container>
@@ -57,6 +60,8 @@ export default {
           value: "actions",
         },
       ],
+      text: "Kayıt başarılı",
+      timeout: 1150,
       // rules: { name: [(val) => val === "" || "This field is required"], surname: [(val) => val === " " || "This field is required"], number: [(val) => val === " " || "This field is required"], age: [(val) => val === "" || "This field is required"], gpa: [(val) => val === "" || "This field is required"] },
       formTitle: "",
       getSearch: "&surname=&number=&age=&gpa=&schoolName=",

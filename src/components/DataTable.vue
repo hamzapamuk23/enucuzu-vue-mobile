@@ -60,7 +60,6 @@ export default {
   methods: {
     async getList() {
       const { sortBy, sortDesc, page, itemsPerPage } = this.options;
-      console.log(sortBy[0], sortDesc[0]);
       let pageNumber = page - 1;
       this.loading = true;
       await this.axios.get(this.getUrl + "name=" + this.search.name + this.getSearch + "&page=" + pageNumber + "&size=" + itemsPerPage + "&sort=" + (sortBy[0] === undefined ? "id" : sortBy[0]) + "," + (sortDesc[0] === true ? "desc" : "asc")).then((response) => ((this.items = response.data._embedded[this.responseKey]), (this.totalElements = response.data.page.totalElements)));

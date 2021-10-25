@@ -1,12 +1,12 @@
 <template>
   <v-container>
     <data-table :tableTitle="tableTitle" :headers="headers" ref="DataTable" :getSearch="getSearch" :responseKey="responseKey" get-url="http://localhost:8080/school/search/findBySchoolName?" delete-url="http://localhost:8080/school/" @editData="editSchool" @onShow="onShow" />
-    <v-card class="mt-5 elevation-3">
+    <v-card class="mt-5 mx-2 elevation-3" style="width:1142px">
       <v-form v-show="showForm">
         <v-toolbar color="#FFA000" flat>
           <v-toolbar-title>{{ formTitle }}</v-toolbar-title>
           <v-spacer></v-spacer>
-          <v-icon class="mr-3" @click="saveSchool()" color="#03A9F4">save</v-icon>
+          <v-icon class="mr-3" @click="saveSchool(), (snackbar = true)" color="#03A9F4">save</v-icon>
           <v-icon @click="showForm = !showForm" color="#B71C1C">cancel</v-icon>
         </v-toolbar>
         <v-container>
@@ -22,6 +22,9 @@
             </v-col>
           </v-row>
         </v-container>
+        <v-snackbar v-model="snackbar" color="#B71C1C" :timeout="timeout">
+          {{ text }}
+        </v-snackbar>
       </v-form>
     </v-card>
   </v-container>
@@ -40,6 +43,9 @@ export default {
       { text: "Active", value: "active" },
       { text: "Actions", sortable: false, value: "actions" },
     ],
+    text: "Kayıt başarılı",
+    timeout: 1150,
+    snackbar: false,
     formTitle: "",
     getSearch: "&code=",
     showForm: false,
