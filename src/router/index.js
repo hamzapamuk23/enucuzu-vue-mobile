@@ -1,20 +1,20 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Student from "../views/Student.vue";
-import School from "../views/School.vue";
+import ProductDetailMobile from "../views/ProductDetailMobile.vue";
+import ProductMobile from "../views/ProductMobile.vue";
 
 Vue.use(VueRouter);
 
 const routes = [
   {
-    path: "/student",
-    name: "Student",
-    component: Student,
+    path: "/ProductDetailMobile",
+    name: "ProductDetailMobile",
+    component: ProductDetailMobile,
   },
   {
-    path: "/school",
-    name: "School",
-    component: School,
+    path: "/ProductMobile",
+    name: "ProductMobile",
+    component: ProductMobile,
     // component: () => import('../views/About.vue')
   },
 ];
