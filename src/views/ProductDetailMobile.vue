@@ -4,17 +4,14 @@
             <v-card max-width="35%" class="elevation-3"
                 style=" display:inline-block; overflow:hidden; white-space: nowrap; text-overflow: ellipsis;">
                 <v-img :src="product.imageUrl"></v-img>
-                <v-card-title class="pa-0" style=" font-size:10px; font-family:source_sans_proregular;">{{product.name}}
+                <v-card-title class="pa-0" style=" font-size:10px; font-family:source_sans_proregular;">
+                    {{product.name}}
                 </v-card-title>
                 <v-divider class="mx-4"></v-divider>
-                <v-card-subtitle align="center" class="pa-2" style="; font-size:50%"><strong> {{product.price}} TL
-                        ({{product.platformName}})</strong></v-card-subtitle>
+                <v-card-subtitle align="center" class="pa-2" style="; font-size:50%"><strong> {{product.price}} TL ({{product.platformName}})</strong></v-card-subtitle>
             </v-card>
-            <div class="ml-5" style="display:inline-block; position: relative; ">
-                <!-- <v-btn v-for="productOther in products" :key="productOther.id" style="display:block">{{productOther.name}}:<span>{{productOther.price}} TL</span></v-btn> -->
-
-                <!-- <v-btn style="display:block">Trendyol:<span>{{product.price}} TL</span></v-btn>
-                <v-btn class="mt-2" style="display:block">Trendyol:<span>{{product.price}} TL</span></v-btn> -->
+            <div class="ml-5" style="display:inline-block;">
+                <v-btn class="pa-2" v-for="productOther in products" :key="productOther.id" :href="productOther.url" style="display:block;;">{{productOther.platformName}}:<span>{{productOther.price}} TL</span></v-btn>
             </div>
         </v-col>
         <v-col width="50%">
@@ -36,11 +33,8 @@
 export default {
     data: () => ({
         products: [],
-        searchName:null,
+        searchName:"",
         product:{},
-        otherLinks:[{url:"https://cdn.dsmcdn.com/web/logo/ty-web.svg",name:"N11"},
-        {url:"https://www.trendyol.com/samsung-c-t/gt-e-1205-kamerasiz-tuslu-cep-telefonu-p-258163943",name:"N11"},
-        {url:"https://www.trendyol.com/samsung-c-t/gt-e-1205-kamerasiz-tuslu-cep-telefonu-p-258163943",name:"N11"}]
     }),
     methods:{
         async getProduct(){

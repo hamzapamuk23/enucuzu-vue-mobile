@@ -22,12 +22,10 @@ export default {
         products:[]
     }),
     methods:{
-        async getProduct(){
-            console.log(localStorage.getItem('searchName'))
-            const response = await this.axios.get("http://localhost:8080/product/search/findCheapestProduct?name="+localStorage.getItem('searchName'));
+        async getProduct() {
+            const response = await this.axios.get("http://localhost:8080/product/search/findCheapestProduct?name=" + this.$route.query.searchName)
             this.products = response.data._embedded.products
             this.products = JSON.parse(JSON.stringify(this.products))
-            console.log(this.products)
             
         },
         goToProductDetail(index){
@@ -35,7 +33,7 @@ export default {
             this.$router.push({path: "/ProductDetailMobile", query:{productId: this.products[index].id, main:false}})
     },
     },
-    mounted(){
+    mounted() {
         this.getProduct()
     }
     

@@ -5,26 +5,47 @@
         :search-input.sync="search" cache-items class="mx-4" flat rounded dark hide-no-data hide-details
         label="What do you want to buy cheap?" solo-inverted>
       </v-autocomplete>
+      <v-icon v-if="!show" @click="goToLogin()" class="mr-2" dark size="200%" right>logout</v-icon>
     </v-app-bar>
     <v-main>
       <router-view></router-view>
-      <v-container v-if="main">
-        <v-layout>
-          <v-flex class="xs12 sm12 md12 lg12 ml-7">
-            <v-card @click="goToProductDetail(index)" v-for="(product,index) in products" :key="product.id" width="25%"
-              class="mt-5 mx-2 elevation-3"
-              style="display:inline-block; overflow:hidden; white-space: nowrap; text-overflow: ellipsis;">
-              <!-- <a :href="product.url" style="text-decoration:none; color:#1b1b1b; "> -->
-              <v-img size="10px" :src="product.imageUrl"></v-img>
-              <v-card-title class="pa-0" style=" font-size:10px; font-family:source_sans_proregular;">{{product.name}}
-              </v-card-title>
-              <v-divider></v-divider>
-              <v-card-subtitle align="center" class="pa-2" style="font-size:50%"><strong>{{product.price}} TL
-                  ({{product.platformName}})</strong></v-card-subtitle>
-              <!-- </a> -->
-            </v-card>
-          </v-flex>
-        </v-layout>
+      <v-container v-if="show" style=" width:80%;  margin-top: 10%; justify-content: center; align-items: center; ">
+        <v-row class="mt-5 mx-2 elevation-5" align="center" style="background-color:#C5CAE9; border-radius: 5px;">
+          <v-col cols="12">
+            <v-form ref="form" lazy-validation>
+              <v-container grid-list-md pa-0>
+                <v-layout row wrap>
+                  <v-flex class="xs12 sm12 md12 lg12">
+                    <v-text-field v-model="customer.userName" hide-details dense outlined label="Kullanıcı Adı">
+                    </v-text-field>
+                  </v-flex>
+                  <v-flex class="xs12 sm12 md12 lg12">
+                    <v-text-field type="password" v-model="customer.password" hide-details dense outlined
+                      label="Parola"></v-text-field>
+                  </v-flex>
+                  <v-flex v-if="login" @click="login=!login" class="xs12 sm12 md12 lg12">
+                    <span style="cursor:pointer;">Üye İseniz Burdan Giriş Yapınız...</span>
+                  </v-flex>
+                  <v-flex v-if="!login" @click="login=!login" class="xs12 sm12 md12 lg12">
+                    <span style="cursor:pointer;">Kayıt Olmak için Tıklayınız...</span>
+                  </v-flex>
+                  <v-flex v-if="!login" class="xs4 sm4 md4 lg4 text-center">
+                    <v-btn @click="checkUser()" width="130px" color="success">
+                      <v-icon left> send </v-icon>
+                      Giriş Yap
+                    </v-btn>
+                  </v-flex>
+                  <v-flex v-if="login" class="xs4 sm4 md4 lg4 text-center">
+                    <v-btn @click="addCustomer()" width="130px" color="success">
+                      <v-icon left> send </v-icon>
+                      Üye Ol
+                    </v-btn>
+                  </v-flex>
+                </v-layout>
+              </v-container>
+            </v-form>
+          </v-col>
+        </v-row>
       </v-container>
     </v-main>
   </v-app>
@@ -33,25 +54,36 @@
 <script>
 export default {
   data: () => ({
-    search: null,
+    login:false,
+    customer: { userName: "", password: "" },
+    show:true,
+    search:null,
     loading: false,
     items: [],
     selected: null,
-    input: "",
-    products: [],
-    main: true,
+    input:"",
+    products:[],
+    main:true,
     states: []
   }),
   watch: {
-    search(val) {
-      val && val !== this.selected && this.querySelections(val)
+    "selected": function () {
+      this.goToFilterProduct()
     },
-  },
+      search (val) {
+        val && val !== this.selected && this.querySelections(val)
+      },
+    },
   mounted() {
-    this.getProduct()
+    if (localStorage.getItem('userName') === "" || localStorage.getItem('userName') === null) { this.show = true }
+    else {
+      this.userName = localStorage.getItem('userName')
+      this.show = false
+      this.getProduct()
+    }
   },
-  methods: {
-    async getProduct() {
+  methods:{
+    async getProduct(){
       const response = await this.axios.get("http://localhost:8080/product?size=24")
       this.totalPage = response.data.page.totalPages
       this.totalElements = response.data.page.totalElements
@@ -63,27 +95,55 @@ export default {
       });
     },
     goToFilterProduct() {
-      this.main = false
-      localStorage.setItem('searchName', this.search)
-      this.$router.push({ path: '/ProductMobile' })
-      this.selected = ""
+      this.$router.push({ path: "/ProductMobile", query: { searchName: this.selected, main: false } })
+      console.log(localStorage.getItem("searchName"))
+      this.$router.go()
     },
-    goToProductDetail(index) {
-      this.main = false
-      this.$router.push({ path: "/ProductDetailMobile", query: { productId: this.products[index].id, main: false } })
+    goToProductDetail(index){
+      this.$router.push({path: "/ProductDetailMobile", query:{productId: this.products[index].id, main:false}})
     },
-    querySelections(v) {
-      this.loading = true
-      setTimeout(() => {
-        this.items = this.states.filter(e => {
-          return (e || '').toLowerCase().indexOf((v || '').toLowerCase()) > -1
-        })
-        this.loading = false
-      }, 500)
-    }
+    querySelections (v) {
+        this.loading = true
+        setTimeout(() => {
+          this.items = this.states.filter(e => {
+            return (e || '').toLowerCase().indexOf((v || '').toLowerCase()) > -1
+          })
+          this.loading = false
+        }, 500)
+    },
+    async addCustomer() {
+      const response = await this.axios.post("http://localhost:8080/user/search/signIn", this.customer)
+      alert(response)
+    },
+    async checkUser() {
+      const response = await this.axios.get("http://localhost:8080/user/search/signUp?userName=" + this.customer.userName + "&password=" + this.customer.password)
+
+      if (response.data) {
+        this.show = false
+        localStorage.setItem('userName', this.customer.userName)
+        this.goToMain()
+        this.cleanLoginIput()
+      }
+      else {
+        this.cleanLoginIput()
+        alert('Kullanıcı Adı veya Şifre Yanlış!!!')
+      }
+    },
+    cleanLoginIput() {
+      this.customer = { userName: "", password: "" }
+    },
+    goToMain() {
+      this.$router.push({ path: '/main' })
+    },
+    goToLogin() {
+      this.show = true
+      localStorage.clear("userName")
+      this.$router.push({ path: '/' })
+    },
   }
 };
 </script>
 
 <style>
+
 </style>
