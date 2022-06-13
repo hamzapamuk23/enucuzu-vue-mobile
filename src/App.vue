@@ -74,17 +74,25 @@ export default {
         val && val !== this.selected && this.querySelections(val)
       },
     },
+  created() {
+    if (localStorage.getItem('userName')) {
+      this.show = false
+      this.$router.push({ path: '/main' })
+    }
+    
+  },
   mounted() {
     if (localStorage.getItem('userName') === "" || localStorage.getItem('userName') === null) { this.show = true }
     else {
       this.userName = localStorage.getItem('userName')
       this.show = false
+      this.$router.push({ path: '/main' })
       this.getProduct()
     }
   },
   methods:{
     async getProduct(){
-      const response = await this.axios.get("http://localhost:8080/product?size=24")
+      const response = await this.axios.get("product?size=24")
       this.totalPage = response.data.page.totalPages
       this.totalElements = response.data.page.totalElements
       this.size = response.data.page.size
@@ -96,7 +104,6 @@ export default {
     },
     goToFilterProduct() {
       this.$router.push({ path: "/ProductMobile", query: { searchName: this.selected, main: false } })
-      console.log(localStorage.getItem("searchName"))
       this.$router.go()
     },
     goToProductDetail(index){
@@ -112,11 +119,11 @@ export default {
         }, 500)
     },
     async addCustomer() {
-      const response = await this.axios.post("http://localhost:8080/user/search/signIn", this.customer)
+      const response = await this.axios.post("user/search/signIn", this.customer)
       alert(response)
     },
     async checkUser() {
-      const response = await this.axios.get("http://localhost:8080/user/search/signUp?userName=" + this.customer.userName + "&password=" + this.customer.password)
+      const response = await this.axios.get("user/search/signUp?userName=" + this.customer.userName + "&password=" + this.customer.password)
 
       if (response.data) {
         this.show = false

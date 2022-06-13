@@ -1,5 +1,5 @@
 <template>
-    <v-row class="mt-5 mx-2 elevation-3" width="100%" align="center">
+    <v-row class="mt-5 mx-2 elevation-3" width="100%" >
         <v-col width="50%">
             <v-card max-width="35%" class="elevation-3"
                 style=" display:inline-block; overflow:hidden; white-space: nowrap; text-overflow: ellipsis;">
@@ -8,10 +8,10 @@
                     {{product.name}}
                 </v-card-title>
                 <v-divider class="mx-4"></v-divider>
-                <v-card-subtitle align="center" class="pa-2" style="; font-size:50%"><strong> {{product.price}} TL ({{product.platformName}})</strong></v-card-subtitle>
+                <v-card-subtitle align="center" class="pa-2" style="; font-size:70%"><strong> {{product.price}} TL ({{product.platformName}})</strong></v-card-subtitle>
             </v-card>
-            <div class="ml-5" style="display:inline-block;">
-                <v-btn class="pa-2" v-for="productOther in products" :key="productOther.id" :href="productOther.url" style="display:block;;">{{productOther.platformName}}:<span>{{productOther.price}} TL</span></v-btn>
+            <div max-width="90%" class="ml-5" style="display:inline-block;">
+                <v-btn width="90%" height="90%" class="pa-2" v-for="productOther in products" :key="productOther.id" :href="productOther.url" style="display:block; font-size: 80%;">{{productOther.platformName}}:<span>{{productOther.price}} TL</span></v-btn>
             </div>
         </v-col>
         <v-col width="50%">
@@ -38,11 +38,12 @@ export default {
     }),
     methods:{
         async getProduct(){
-            const response = await this.axios.get("http://localhost:8080/product/search/getProduct?id=" + this.$route.query.productId)
+            const response = await this.axios.get("product/search/getProduct?id=" + this.$route.query.productId)
             this.product = response.data._embedded.products[0]
 
-            this.searchName = this.product.name.substring(0, this.product.name.indexOf('('))
-            const response2 = await this.axios.get("http://localhost:8080/product/search/findCheapestProduct?name=" + this.searchName);
+            this.searchName = this.product.name.substring(0, this.product.name.indexOf('GB'))
+            console.log(this.searchName)
+            const response2 = await this.axios.get("product/search/findCheapestProduct?name=" + this.searchName);
             this.products = response2.data._embedded.products
         }
     },
