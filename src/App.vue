@@ -75,19 +75,19 @@ export default {
       },
     },
   created() {
-    if (localStorage.getItem('userName')) {
+    if (localStorage.getItem('userName') && this.$router.path() === "/main") {
       this.show = false
-      this.$router.push({ path: '/main' })
     }
     
   },
   mounted() {
-    if (localStorage.getItem('userName') === "" || localStorage.getItem('userName') === null) { this.show = true }
+    if ((localStorage.getItem('userName') === "" || localStorage.getItem('userName') === null)) { this.show = true }
     else {
       this.userName = localStorage.getItem('userName')
       this.show = false
-      this.$router.push({ path: '/main' })
       this.getProduct()
+      this.goToMain()
+
     }
   },
   methods:{

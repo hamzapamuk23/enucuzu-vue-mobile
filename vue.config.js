@@ -3,7 +3,7 @@ module.exports = {
     'vuetify'
   ],
   devServer: {
-		host: '10.192.148.143',
+		host: 'localhost',
 		port: 8083
 	}
 }
